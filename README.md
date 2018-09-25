@@ -41,3 +41,11 @@ Everything. When I have time. Which is never. But it's the thought that counts
 
 Will be attempting to implement other graph algorithms later on, probably choosing from this [site](https://www.geeksforgeeks.org/graph-data-structure-and-algorithms/) and this [site](https://en.wikipedia.org/wiki/Category:Graph_algorithms)
 
+### Links Used in Project
+
+I don't know anything about the Qt Framework, so making this application will be an uphill battle. I'm storing here all the links to references and StackOverflow posts that were useful to me.
+
+https://stackoverflow.com/questions/14288635/any-easy-way-to-store-dock-widows-layout-and-sizes-in-settings-with-qt
+
+http://doc.qt.io/archives/qt-4.8/designer-creating-mainwindows.html#theactioneditor
+
