@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //createUndoView();
 
-
+    //connect(ui->graphWidget->scene(), &QGraphicsScene::selectionChanged,
 
 //    ui->mainToolBar->addAction(ui->dockWidget_4->toggleViewAction());
 //    ui->menuBar->addAction(ui->dockWidget_4->toggleViewAction());

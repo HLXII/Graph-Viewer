@@ -1,12 +1,12 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2018-09-11T19:20:06
+# Project created by QtCreator 2018-09-25T16:58:44
 #
 #-------------------------------------------------
 
 QT       += core gui widgets
 
-TARGET = GraphViewer
+TARGET = Graph-Viewer
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -23,25 +23,35 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-    main.cpp \
-    mainwindow.cpp \
+        main.cpp \
+        mainwindow.cpp \
+    commands.cpp \
     edge.cpp \
     graphwidget.cpp \
-    node.cpp \
-    commands.cpp
+    main.cpp \
+    mainwindow.cpp \
+    node.cpp
 
 HEADERS += \
-    mainwindow.h \
+        mainwindow.h \
+    commands.h \
     edge.h \
     graphwidget.h \
+    mainwindow.h \
     node.h \
-    ui_mainwindow.h \
-    commands.h
+    ui_mainwindow.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+SUBDIRS += \
+    Graph-Viewer.pro
+
+DISTFILES += \
+    Graph-Viewer.pro.user

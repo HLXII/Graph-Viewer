@@ -13,9 +13,8 @@ GraphWidget::GraphWidget(QWidget *parent)
     // Setting up QGraphicScene
     QGraphicsScene *scene = new QGraphicsScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
-    scene->setSceneRect(0,0,1000,1000);
-
     int minimumSize = 1000;
+    scene->setSceneRect(0,0,minimumSize,minimumSize);
 
     //scene->addLine(QLineF(-minimumSize,-minimumSize,minimumSize,-minimumSize));
     //scene->addLine(QLineF(-minimumSize,minimumSize,minimumSize,minimumSize));
@@ -129,6 +128,8 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
 void GraphWidget::mousePressEvent(QMouseEvent *event)
 {
     QGraphicsView::mousePressEvent(event);
+
+
 }
 void GraphWidget::mouseMoveEvent(QMouseEvent* event)
 {
