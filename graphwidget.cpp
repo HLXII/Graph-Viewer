@@ -13,15 +13,15 @@ GraphWidget::GraphWidget(QWidget *parent)
     // Setting up QGraphicScene
     QGraphicsScene *scene = new QGraphicsScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
-    int minimumSize = 1000;
+    int minimumSize = 5000;
     scene->setSceneRect(0,0,minimumSize,minimumSize);
+    setScene(scene);
 
     //scene->addLine(QLineF(-minimumSize,-minimumSize,minimumSize,-minimumSize));
     //scene->addLine(QLineF(-minimumSize,minimumSize,minimumSize,minimumSize));
     //connect(scene, &QGraphicsScene::sceneRectChanged, this, &GraphWidget::updateView);
     //connect(scene, SIGNAL(sceneRectChanged(const QRectF &rect)), this, SLOT(updateView(const QRectF &rect)));
     //connect(scene, SIGNAL(changed(const QList<QRectF>)), this, SLOT(updateScene(const QList<QRectF>)));
-    setScene(scene);
 
     // Setting up GraphWidget
     setCacheMode(CacheBackground);
@@ -29,29 +29,37 @@ GraphWidget::GraphWidget(QWidget *parent)
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
     setDragMode(QGraphicsView::ScrollHandDrag);
-    //setDragMode(QGraphicsView::RubberBandDrag);
     setContextMenuPolicy(Qt::CustomContextMenu);
+
+    // Connecting Custom Context Menu
     connect(this, SIGNAL(customContextMenuRequested(QPoint)),
                     SLOT(showCustomMenu(QPoint)));
 
-    undoStack = new QUndoStack(this);
+    // Setting up Data
+    pointerState = PointerState::MOVE;
 
+    // Creating UndoStack
+    undoStack = new QUndoStack(this);
     undoView = new QUndoView(undoStack);
     undoView->setWindowTitle(tr("Command List"));
     undoView->show();
     undoView->setAttribute(Qt::WA_QuitOnClose, false);
 }
 
-//void GraphWidget::updateScene(const QList<QRectF> &region)
-//{
-//    //this->scene()->setSceneRect(this->scene()->itemsBoundingRect());
-//}
+void GraphWidget::updatePointerState() {
+    PointerState newPointerState = PointerState::MOVE;
+    QString tool = qobject_cast<QAction*>(sender())->text();
+    if (tool == "Add Node") {
+        newPointerState = PointerState::NODE;
+    } else if (tool == "Add Edge") {
+        newPointerState = PointerState::EDGE_START;
+    }
+    updatePointerState(newPointerState);
+}
 
-void GraphWidget::updateView(const QRectF &rect)
-{
-    Q_UNUSED(rect);
-
-    fitInView(this->scene()->sceneRect(),Qt::KeepAspectRatioByExpanding);
+void GraphWidget::updatePointerState(PointerState pointerState) {
+    this->pointerState = pointerState;
+    qDebug() << "Pointer State: " << this->pointerState << endl;
 }
 
 void GraphWidget::addNode()
@@ -62,11 +70,31 @@ void GraphWidget::addNode()
     undoStack->push(addNodeCommand);
 }
 
+void GraphWidget::addNode(QPoint pos)
+{
+    pos = this->mapToScene(pos).toPoint();
+    QUndoCommand *addNodeCommand = new AddNodeCommand(this, pos);
+    undoStack->push(addNodeCommand);
+}
+
 void GraphWidget::deleteNode()
 {
     Node* node = static_cast<Node*>(qobject_cast<QAction *>(sender())->data().value<void*>());
     QUndoCommand* deleteNodeCommand = new DeleteNodeCommand(this, node);
     undoStack->push(deleteNodeCommand);
+}
+
+//void GraphWidget::addEdge()
+//{
+//    Node* startNode = static_cast<Node*>(qobject_cast<QAction *>(sender())->data().value<void*>());
+//    QUndoCommand * addEdgeCommand = new AddEdgeCommand(this, node);
+//    undoStack->push(addEdgeCommand);
+//}
+
+void GraphWidget::addEdge(Node* source, Node* dest)
+{
+    QUndoCommand* addEdgeCommand = new AddEdgeCommand(this, source, dest);
+    undoStack->push(addEdgeCommand);
 }
 
 void GraphWidget::showCustomMenu(QPoint pos)
@@ -89,7 +117,6 @@ void GraphWidget::showCustomMenu(QPoint pos)
         addEdgeAction.setData(v);
         deleteNodeAction.setData(v);
         viewDataAction.setData(v);
-        //connect(&addEdgeAction, SIGNAL(triggered()), this, SLOT(addNode()));
         connect(&deleteNodeAction, SIGNAL(triggered()), this, SLOT(deleteNode()));
         contextMenu.addAction(&addEdgeAction);
         contextMenu.addAction(&deleteNodeAction);
@@ -108,9 +135,11 @@ void GraphWidget::showCustomMenu(QPoint pos)
 void GraphWidget::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
+    case Qt::Key_Escape:
+        updatePointerState(PointerState::MOVE);
+        scene()->clearSelection();
+        break;
     case Qt::Key_F:
-        //scene()->setSceneRect(scene()->itemsBoundingRect());
-        //fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
         break;
     case Qt::Key_Z:
         undoStack->undo();
@@ -127,9 +156,19 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
 
 void GraphWidget::mousePressEvent(QMouseEvent *event)
 {
-    QGraphicsView::mousePressEvent(event);
-
-
+    switch(pointerState) {
+    case MOVE:
+        QGraphicsView::mousePressEvent(event);
+        break;
+    case NODE:
+        break;
+    case EDGE_START:
+        break;
+    case EDGE_END:
+        break;
+    default:
+        break;
+    }
 }
 void GraphWidget::mouseMoveEvent(QMouseEvent* event)
 {
@@ -137,7 +176,34 @@ void GraphWidget::mouseMoveEvent(QMouseEvent* event)
 }
 void GraphWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-    QGraphicsView::mouseReleaseEvent(event);
+    QGraphicsItem* item = this->scene()->itemAt(this->mapToScene(event->pos()),QTransform());
+    switch(pointerState) {
+    case MOVE:
+        QGraphicsView::mouseReleaseEvent(event);
+        if (item && item->type() == 65537) {
+            qDebug() << "MOVED" << endl;
+        }
+        break;
+    case NODE:
+        addNode(event->pos());
+        break;
+    case EDGE_START:
+        if (item && item->type() == 65537) {
+            scene()->clearSelection();
+            static_cast<Node*>(item)->setSelected(true);
+            updatePointerState(PointerState::EDGE_END);
+        }
+        break;
+    case EDGE_END:
+        if (item && item->type() == 65537) {
+            addEdge(static_cast<Node*>(scene()->selectedItems().first()), static_cast<Node*>(item));
+            scene()->clearSelection();
+            updatePointerState(PointerState::EDGE_START);
+        }
+        break;
+    default:
+        break;
+    }
 }
 
 void GraphWidget::timerEvent(QTimerEvent *event)

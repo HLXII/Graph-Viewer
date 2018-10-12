@@ -71,6 +71,16 @@ void Node::addEdge(Edge *edge)
     edgeList << edge;
     edge->adjust();
 }
+void Node::removeEdge(Edge* edge)
+{
+    QMutableListIterator<Edge*> i(edgeList);
+    while (i.hasNext()) {
+        if (i.next() == edge) {
+            i.remove();
+            return;
+        }
+    }
+}
 QList<Edge *> Node::edges() const
 {
     return edgeList;
@@ -105,7 +115,7 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     painter->drawEllipse(-7, -7, 20, 20);
 
     QRadialGradient gradient(-3, -3, 10);
-    if (option->state & QStyle::State_Sunken) {
+    if (option->state & QStyle::State_Selected) {
         gradient.setCenter(3, 3);
         gradient.setFocalPoint(3, 3);
         gradient.setColorAt(1, QColor(Qt::yellow).light(120));
@@ -137,6 +147,9 @@ QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value)
 void Node::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     QGraphicsItem::mousePressEvent(event);
+    this->scene()->clearSelection();
+    this->setSelected(true);
+    qDebug() << this->scene()->selectedItems() << endl;
     update();
 }
 void Node::mouseMoveEvent(QGraphicsSceneMouseEvent *event)

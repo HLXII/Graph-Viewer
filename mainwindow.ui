@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
+    <width>842</width>
     <height>360</height>
    </rect>
   </property>
@@ -30,12 +30,12 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <property name="sizePolicy">
-    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
-   <layout class="QGridLayout" name="gridLayout_3">
+   <layout class="QGridLayout" name="gridLayout_2">
     <item row="0" column="0">
      <widget class="GraphWidget" name="graphWidget">
       <property name="sizePolicy">
@@ -53,7 +53,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>640</width>
+     <width>842</width>
      <height>22</height>
     </rect>
    </property>
@@ -82,9 +82,15 @@
     <property name="title">
      <string>View</string>
     </property>
-    <addaction name="actionStack"/>
-    <addaction name="actionQueue"/>
-    <addaction name="actionTable"/>
+    <widget class="QMenu" name="menuShow">
+     <property name="title">
+      <string>Show</string>
+     </property>
+     <addaction name="actionShow_Stack"/>
+     <addaction name="actionShow_Queue"/>
+     <addaction name="actionShow_Table"/>
+    </widget>
+    <addaction name="menuShow"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -97,11 +103,13 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionAdd_Node"/>
+   <addaction name="actionAdd_Edge"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="dockWidget_Stack">
    <property name="sizePolicy">
-    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
@@ -109,13 +117,25 @@
    <attribute name="dockWidgetArea">
     <number>1</number>
    </attribute>
-   <widget class="QWidget" name="dockWidgetContents_Stack"/>
+   <widget class="QWidget" name="dockWidgetContents_Stack">
+    <layout class="QGridLayout" name="gridLayout_3">
+     <item row="0" column="0">
+      <widget class="QTableWidget" name="tableWidget"/>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <widget class="QDockWidget" name="dockWidget_Queue">
    <attribute name="dockWidgetArea">
     <number>2</number>
    </attribute>
-   <widget class="QWidget" name="dockWidgetContents_Queue"/>
+   <widget class="QWidget" name="dockWidgetContents_Queue">
+    <layout class="QGridLayout" name="gridLayout_4">
+     <item row="0" column="0">
+      <widget class="QListWidget" name="listWidget"/>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <action name="actionNew">
    <property name="text">
@@ -167,28 +187,34 @@
     <string>Delete</string>
    </property>
   </action>
-  <action name="actionStack">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
+  <action name="actionShow">
    <property name="text">
-    <string>Stack</string>
+    <string>Show</string>
    </property>
   </action>
-  <action name="actionQueue">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
+  <action name="actionShow_Stack">
    <property name="text">
-    <string>Queue</string>
+    <string>Show Stack</string>
    </property>
   </action>
-  <action name="actionTable">
+  <action name="actionShow_Queue">
    <property name="text">
-    <string>Table</string>
+    <string>Show Queue</string>
+   </property>
+  </action>
+  <action name="actionShow_Table">
+   <property name="text">
+    <string>Show Table</string>
+   </property>
+  </action>
+  <action name="actionAdd_Node">
+   <property name="text">
+    <string>Add Node</string>
+   </property>
+  </action>
+  <action name="actionAdd_Edge">
+   <property name="text">
+    <string>Add Edge</string>
    </property>
   </action>
  </widget>
@@ -203,34 +229,34 @@
  <resources/>
  <connections>
   <connection>
-   <sender>actionStack</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>dockWidget_Stack</receiver>
-   <slot>setVisible(bool)</slot>
+   <sender>actionShow_Queue</sender>
+   <signal>triggered()</signal>
+   <receiver>dockWidget_Queue</receiver>
+   <slot>show()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
      <y>-1</y>
     </hint>
     <hint type="destinationlabel">
-     <x>30</x>
-     <y>181</y>
+     <x>701</x>
+     <y>189</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>actionQueue</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>dockWidget_Queue</receiver>
-   <slot>setVisible(bool)</slot>
+   <sender>actionShow_Stack</sender>
+   <signal>triggered()</signal>
+   <receiver>dockWidget_Stack</receiver>
+   <slot>show()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
      <y>-1</y>
     </hint>
     <hint type="destinationlabel">
-     <x>537</x>
-     <y>181</y>
+     <x>139</x>
+     <y>189</y>
     </hint>
    </hints>
   </connection>

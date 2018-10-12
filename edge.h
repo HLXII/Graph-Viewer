@@ -61,6 +61,7 @@ public:
     Edge(Node *sourceNode, Node *destNode);
 
     Node *sourceNode() const;
+
     Node *destNode() const;
 
     void adjust();

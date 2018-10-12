@@ -26,8 +26,9 @@ void AddNodeCommand::undo()
 
 void AddNodeCommand::redo()
 {
-    //graphWidget->scene()->addItem(node);
-    //node->setPosition(initialPosition);
+    graphWidget->scene()->addItem(node);
+    node->setPosition(initialPosition);
+    graphWidget->scene()->clearSelection();
     graphWidget->update();
 }
 
@@ -55,6 +56,39 @@ void DeleteNodeCommand::undo()
 
 void DeleteNodeCommand::redo()
 {
-    //graphWidget->scene()->removeItem(node);
+    graphWidget->scene()->removeItem(node);
+    graphWidget->update();
+}
+
+AddEdgeCommand::AddEdgeCommand(GraphWidget* graphWidget, Node* source, Node* dest, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    this->graphWidget = graphWidget;
+    this->edge = new Edge(source, dest);
+    source->addEdge(this->edge);
+    dest->addEdge(this->edge);
+    graphWidget->scene()->addItem(edge);
+    graphWidget->update();
+    QString commandString = QObject::tr("Edge from %1 to %2)").arg(source->type()).arg(dest->type());
+    setText(QObject::tr("Add %1").arg(commandString));
+}
+
+AddEdgeCommand::~AddEdgeCommand()
+{
+}
+
+void AddEdgeCommand::undo()
+{
+    graphWidget->scene()->removeItem(edge);
+    edge->sourceNode()->removeEdge(edge);
+    edge->destNode()->removeEdge(edge);
+    graphWidget->update();
+}
+
+void AddEdgeCommand::redo()
+{
+    graphWidget->scene()->addItem(edge);
+    edge->sourceNode()->addEdge(edge);
+    edge->destNode()->addEdge(edge);
     graphWidget->update();
 }

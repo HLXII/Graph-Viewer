@@ -40,6 +40,22 @@ private:
     Node* node;
 };
 
+class AddEdgeCommand : public QUndoCommand
+{
+public:
+    AddEdgeCommand(GraphWidget* graphWidget,
+                   Node* source,
+                   Node* dest,
+                   QUndoCommand *parent = nullptr);
+    ~AddEdgeCommand() override;
+
+    void undo() override;
+    void redo() override;
+
+private:
+    GraphWidget* graphWidget;
+    Edge* edge;
+};
 
 
 #endif // COMMANDS_H

@@ -13,6 +13,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //connect(ui->graphWidget->scene(), &QGraphicsScene::selectionChanged,
 
+    connect(ui->actionAdd_Node, SIGNAL(triggered()), ui->graphWidget, SLOT(updatePointerState()));
+    connect(ui->actionAdd_Edge, SIGNAL(triggered()), ui->graphWidget, SLOT(updatePointerState()));
 //    ui->mainToolBar->addAction(ui->dockWidget_4->toggleViewAction());
 //    ui->menuBar->addAction(ui->dockWidget_4->toggleViewAction());
 

@@ -9,6 +9,8 @@
 #include <QUndoView>
 #include <QMenu>
 
+enum PointerState {MOVE, NODE, EDGE_START, EDGE_END};
+
 class GraphWidget : public QGraphicsView
 {
     Q_OBJECT
@@ -19,10 +21,12 @@ public:
 public slots:
     void showCustomMenu(QPoint pos);
     void addNode();
+    void addNode(QPoint pos);
     void deleteNode();
-    //void update();
-    void updateView(const QRectF &rect);
-    //void updateScene(const QList<QRectF> &region);
+    void addEdge(Node*, Node*);
+
+    void updatePointerState();
+    void updatePointerState(PointerState);
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
@@ -35,6 +39,8 @@ protected:
     void drawBackground(QPainter *painter, const QRectF &rect) override;
 
 private:
+    PointerState pointerState;
+
     int timerId;
 
     int dragOriginX;

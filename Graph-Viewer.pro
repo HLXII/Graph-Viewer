@@ -28,8 +28,6 @@ SOURCES += \
     commands.cpp \
     edge.cpp \
     graphwidget.cpp \
-    main.cpp \
-    mainwindow.cpp \
     node.cpp
 
 HEADERS += \
@@ -37,13 +35,11 @@ HEADERS += \
     commands.h \
     edge.h \
     graphwidget.h \
-    mainwindow.h \
     node.h \
     ui_mainwindow.h
 
 FORMS += \
-        mainwindow.ui \
-    mainwindow.ui
+        mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -67,6 +67,7 @@ public:
     Node(GraphWidget *graphWidget);
 
     void addEdge(Edge *edge);
+    void removeEdge(Edge* edge);
     QList<Edge *> edges() const;
 
     enum { Type = UserType + 1 };
